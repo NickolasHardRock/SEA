@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 async function conectaNaDatabase(){
 
-    const uri = process.env.MONGODB_URI || "mongodb+srv://admin:admin123@cluster0.mwxer4e.mongodb.net/?appName=Cluster0";
+    const uri = process.env.MONGODB_URI || "mongodb+srv://admin:admin123@cluster0.dktoqen.mongodb.net/?appName=Cluster0";
 
     if(mongoose.connection.readyState === 1){
         return mongoose.connection
