@@ -11,6 +11,17 @@ conexao.once("open", () => {
   console.log("Conexao com o banco feita com sucesso");
 })
 
+
+// (async () => {
+//   try {
+//     const conn = await conectaNaDatabase();
+//     console.log("Conectado ao MongoDB:", conn.name);
+//   } catch (err) {
+//     console.error("Erro ao conectar:", err.message);
+//   }
+// })();
+
+
 const app = express();
 
 app.use(express.json()); // Middleware
