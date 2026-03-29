@@ -1,11 +1,18 @@
 # GEA
+
+
+
 Repositório para o desenvolvimento da aplicação do projeto de extensão
 
 
 -- ============================================
+
 -- SCRIPT COMPLETO DO BANCO DE DADOS SEA
+
 -- Autor: Nickolas de Carlos Lamin
+
 -- Data: 28/03/2026
+
 -- ============================================
 
 -- Criação das tabelas
