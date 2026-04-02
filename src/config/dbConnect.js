@@ -1,26 +1,18 @@
-import mongoose from "mongoose";
-
-async function conectaNaDatabase(){
-    mongoose.connect("mongodb+srv://admin:admin123@cluster0.dktoqen.mongodb.net/?appName=Cluster0");
-    return mongoose.connection;
-};
+import dotenv from 'dotenv';
+import pg from 'pg';
 
 
-// async function conectaNaDatabase(){
+dotenv.config();
 
-//     const uri = process.env.MONGODB_URI || "mongodb+srv://admin:admin123@cluster0.dktoqen.mongodb.net/?appName=Cluster0";
+const {Pool} = pg;
 
-//     if(mongoose.connection.readyState === 1){
-//         return mongoose.connection
-//     }
+const pool = new Pool({
+  user: process.env.DB_USER,       // seu usuário
+  host: process.env.DB_HOST,      // ou IP do servidor
+  database: process.env.DB_NAME,        // nome do banco
+  password: process.env.DB_PASS,  // senha definida na instalação
+  port: process.env.DB_PORT,         
+})
 
-//     await mongoose.connect(uri,{
-//         dbName: process.env.MONGODB_DB || "gead",
-//     });
-
-// return mongoose.connection;
-// };
-
-export default conectaNaDatabase;
-
+export default  pool;
 
