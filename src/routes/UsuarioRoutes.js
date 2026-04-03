@@ -1,11 +1,19 @@
 import express from 'express';
 
-import {listarUsuarios} from '../controllers/UsuarioController.js'
+import {listarUsuarios, procurarUsuario, inserirUsuario, atualizarUsuario, deleteUsuario} from '../controllers/UsuarioController.js'
 import pool from '../config/dbConnect.js';
 
 const router = express.Router();
 
 router.get('/',listarUsuarios)
+
+router.get ('/id/:id',procurarUsuario)
+
+router.post ('/NovoUsuario',inserirUsuario)
+
+router.put ('/AtualizarUsuario',atualizarUsuario)
+
+router.delete ('/DeletarUsuario',deleteUsuario)
 
 router.get('/ping', async (req,res) => {
     try{

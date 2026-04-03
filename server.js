@@ -2,26 +2,21 @@
 
 
 import express from 'express';
-const app = express();
-
 import dotenv from 'dotenv';
+import UsuariosRoutes from './src/routes/UsuarioRoutes.js';
 dotenv.config();
 
-import UsuariosRoutes from './src/routes/UsuarioRoutes.js';
+const app = express();
 
-
-
-
-
-console.log(process.env.DB_USER);
+app.use(express.json());
 
 const PORT = 3000;
+
+
+
+
+app.use('/api/usuario',UsuariosRoutes);
 
 app.listen(PORT,() =>{
     console.log("Servidor escutando 3000");
 });
-
-app.use('/api/usuario',UsuariosRoutes);
-
-app.use('/api/usuario/ping',UsuariosRoutes);
-
