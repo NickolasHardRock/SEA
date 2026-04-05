@@ -1,4 +1,4 @@
-import pool from "../config/dbConnect";
+import pool from "../config/dbConnect.js";
 
 export const findAll = async() =>{
     const sql = `

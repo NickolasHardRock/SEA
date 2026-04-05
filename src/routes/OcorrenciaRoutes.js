@@ -9,8 +9,8 @@ router.get('/id/:id',procurarOcorrencia);
 
 router.post('/NovaOcorrencia',inserirOcorrencia);
 
-router.put('/AtualizarOcorrencia',atualizarOcorrencia);
+router.put('/AtualizarOcorrencia/:id',atualizarOcorrencia);
 
-router.delete('/DeletarOcorrencia',deleteOcorrencia);
+router.delete('/DeletarOcorrencia/:id',deleteOcorrencia);
 
 export default router;

@@ -10,9 +10,9 @@ router.get ('/id/:id',procurarUsuario)
 
 router.post ('/NovoUsuario',inserirUsuario)
 
-router.put ('/AtualizarUsuario',atualizarUsuario)
+router.put ('/AtualizarUsuario/:id',atualizarUsuario)
 
-router.delete ('/DeletarUsuario',deleteUsuario)
+router.delete ('/DeletarUsuario/:id',deleteUsuario)
 
 
 export default router;

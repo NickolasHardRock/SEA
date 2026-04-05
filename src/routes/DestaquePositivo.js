@@ -9,8 +9,8 @@ router.get('/id/:id',procurarDestaquePostivio);
 
 router.post('/NovoDestaque',inserirDestaquePositivo);
 
-router.put('/AtualizarDestaque',atualizarDestaquePositivo);
+router.put('/AtualizarDestaque/:id',atualizarDestaquePositivo);
 
-router.delete('/DeletarDestaque',deleteDestaquePositivo);
+router.delete('/DeletarDestaque/:id',deleteDestaquePositivo);
 
 export default router;

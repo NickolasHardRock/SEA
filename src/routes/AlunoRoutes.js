@@ -10,8 +10,8 @@ router.get('/id/:id',procurarAluno)
 
 router.post('/NovoAluno',inserirAluno)
 
-router.put('/AtualizarAluno',atualizarAluno)
+router.put('/AtualizarAluno/:id',atualizarAluno)
 
-router.delete('/DeletarAluno',deleteAluno)
+router.delete('/DeletarAluno/:id',deleteAluno)
 
 export default router;
