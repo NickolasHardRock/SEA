@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEA - Sistema de Ensino Adaptativo</title>
+    <link rel="stylesheet" href="/sea-frontend/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <h1>SEA</h1>
+                <span>Sistema de Ensino Adaptativo</span>
+            </div>
+            <div class="navbar-menu">
+                <button id="btnPerfil" class="btn-perfil">Perfil</button>
+                <button id="btnSair" class="btn-sair">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h3>Menu Principal</h3>
+                    <ul>
+                        <li><a href="#" onclick="mostrarPagina('dashboard')">Dashboard</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3>Operações</h3>
+                    <ul>
+                        <li><a href="#" onclick="mostrarPagina('registrar-ocorrencia')">+ Registrar Ocorrência</a></li>
+                        <li><a href="#" onclick="mostrarPagina('registrar-destaque')">+ Registrar Destaque</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3>Consultas</h3>
+                    <ul>
+                        <li><a href="#" onclick="mostrarPagina('consultar-historico')">Consultar Histórico</a></li>
+                        <li><a href="#" onclick="mostrarPagina('listar-ocorrencias')">Listar Ocorrências</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Dashboard -->
+            <section id="dashboard" class="page">
+                <h2>Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total de Ocorrências</h3>
+                        <p class="stat-number">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Destaques Positivos</h3>
+                        <p class="stat-number">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Alunos com Ocorrências</h3>
+                        <p class="stat-number">0</p>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <div class="activity-box">
+                        <h3>Ocorrências Recentes</h3>
+                        <p id="ocorrenciasVazias" class="empty-message">Nenhuma ocorrência registrada</p>
+                        <div id="listaOcorrenciasRecentes"></div>
+                    </div>
+
+                    <div class="activity-box">
+                        <h3>Destaques Recentes</h3>
+                        <p id="destaquesVazios" class="empty-message">Nenhum destaque registrado</p>
+                        <div id="listaDestaquesRecentes"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Registrar Ocorrência -->
+            <section id="registrar-ocorrencia" class="page" style="display: none;">
+                <h2>Registrar Ocorrência</h2>
+                <form id="formOcorrencia" class="form">
+                    <div class="form-group">
+                        <label for="alunoId">ID do Aluno *</label>
+                        <input type="number" id="alunoId" name="alunoId" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipoOcorrencia">Tipo de Ocorrência *</label>
+                        <select id="tipoOcorrencia" name="tipoOcorrencia" required>
+                            <option value="">Selecione um tipo</option>
+                            <option value="1">Comportamento</option>
+                            <option value="2">Atraso</option>
+                            <option value="3">Rendimento</option>
+                            <option value="4">Material</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gravidade">Gravidade *</label>
+                        <select id="gravidade" name="gravidade" required>
+                            <option value="">Selecione a gravidade</option>
+                            <option value="1">Leve</option>
+                            <option value="2">Média</option>
+                            <option value="3">Alta</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descricao">Descrição *</label>
+                        <textarea id="descricao" name="descricao" rows="4" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="acaoTomada">Ação Tomada</label>
+                        <textarea id="acaoTomada" name="acaoTomada" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-primary">Registrar Ocorrência</button>
+                        <button type="button" class="btn-secondary" onclick="mostrarPagina('dashboard')">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Registrar Destaque -->
+            <section id="registrar-destaque" class="page" style="display: none;">
+                <h2>Registrar Destaque Positivo</h2>
+                <form id="formDestaque" class="form">
+                    <div class="form-group">
+                        <label for="alunoIdDestaque">ID do Aluno *</label>
+                        <input type="number" id="alunoIdDestaque" name="alunoIdDestaque" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descricaoDestaque">Descrição do Destaque *</label>
+                        <textarea id="descricaoDestaque" name="descricaoDestaque" rows="5" required></textarea>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-primary btn-success">Registrar Destaque</button>
+                        <button type="button" class="btn-secondary" onclick="mostrarPagina('dashboard')">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Consultar Histórico -->
+            <section id="consultar-historico" class="page" style="display: none;">
+                <h2>Consultar Histórico do Aluno</h2>
+                <form id="formBusca" class="form-busca">
+                    <input type="number" id="matriculaBusca" placeholder="Digite a matrícula do aluno" required>
+                    <button type="submit" class="btn-primary">Buscar</button>
+                </form>
+
+                <div id="resultadoBusca" style="display: none;">
+                    <div class="aluno-info">
+                        <h3>Informações do Aluno</h3>
+                        <div class="info-grid">
+                            <div><strong>Nome:</strong> <span id="alunoNome">-</span></div>
+                            <div><strong>Matrícula:</strong> <span id="alunoMatricula">-</span></div>
+                            <div><strong>Turma:</strong> <span id="alunoTurma">-</span></div>
+                            <div><strong>Status:</strong> <span id="alunoStatus">-</span></div>
+                        </div>
+                    </div>
+
+                    <div class="historico-box">
+                        <h3>Ocorrências</h3>
+                        <p id="ocorrenciasHistorico" class="empty-message">Nenhuma ocorrência registrada</p>
+                    </div>
+
+                    <div class="historico-box">
+                        <h3>Destaques Positivos</h3>
+                        <p id="destaquesHistorico" class="empty-message">Nenhum destaque registrado</p>
+                    </div>
+
+                    <div class="desempenho-box">
+                        <h3>Desempenho Integrado</h3>
+                        <div class="desempenho-grid">
+                            <div><strong>Nota Média:</strong> <span>-</span></div>
+                            <div><strong>Frequência:</strong> <span>-</span></div>
+                            <div><strong>Total de Ocorrências:</strong> <span>0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Listar Ocorrências -->
+            <section id="listar-ocorrencias" class="page" style="display: none;">
+                <h2>Listar Ocorrências</h2>
+                
+                <div class="filtros">
+                    <h3>Filtros</h3>
+                    <div class="filtros-grid">
+                        <div>
+                            <label for="filtroTipo">Tipo</label>
+                            <select id="filtroTipo">
+                                <option value="">Todos</option>
+                                <option value="1">Comportamento</option>
+                                <option value="2">Atraso</option>
+                                <option value="3">Rendimento</option>
+                                <option value="4">Material</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="filtroGravidade">Gravidade</label>
+                            <select id="filtroGravidade">
+                                <option value="">Todas</option>
+                                <option value="1">Leve</option>
+                                <option value="2">Média</option>
+                                <option value="3">Alta</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="filtroPeriodo">Período</label>
+                            <input type="month" id="filtroPeriodo">
+                        </div>
+                        <div>
+                            <label for="filtroTurma">Turma</label>
+                            <input type="text" id="filtroTurma" placeholder="Ex: Turma A">
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="limparFiltros()">Limpar Filtros</button>
+                </div>
+
+                <div class="tabela-container">
+                    <table class="tabela">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Aluno</th>
+                                <th>Tipo</th>
+                                <th>Gravidade</th>
+                                <th>Descrição</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaOcorrencias">
+                            <tr>
+                                <td colspan="5" class="empty-message">Nenhuma ocorrência registrada</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
