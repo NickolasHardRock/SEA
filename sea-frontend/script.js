@@ -1,7 +1,3 @@
-// Dados simulados (em produção viriam do backend)
-let ocorrencias = [];
-let destaques = [];
-let alunos = [];
 
 async function getUsuario() {
     const Usuarios = "http://localhost:3000/api/usuario";
@@ -10,60 +6,108 @@ async function getUsuario() {
         if(!response.ok){
             throw new Error(`Respsonse status: ${response.status}`);
         }
-
+        
         const result = await response.json();
-        console.log(result);
+        console.log(result)
+        return result;
     }catch(error){
         console.error(error.message);
     }
 }
 
-getUsuario();
-
-// Inicializar dados de exemplo
-function inicializarDados() {
-    alunos = [
-        { id: 1, matricula: 2026001, nome: "João Silva", turma: "Turma A" },
-        { id: 2, matricula: 2026002, nome: "Maria Santos", turma: "Turma B" },
-        { id: 3, matricula: 2026003, nome: "Pedro Oliveira", turma: "Turma A" },
-    ];
-
-    ocorrencias = [
-        {
-            id: 1,
-            aluno_id: 1,
-            tipo: 1,
-            gravidade: 2,
-            descricao: "Comportamento inadequado em sala",
-            data: new Date(2026, 2, 28),
-        },
-        {
-            id: 2,
-            aluno_id: 2,
-            tipo: 2,
-            gravidade: 1,
-            descricao: "Atraso na chegada à aula",
-            data: new Date(2026, 2, 27),
-        },
-    ];
-
-    destaques = [
-        {
-            id: 1,
-            aluno_id: 1,
-            descricao: "Excelente desempenho em matemática",
-            data: new Date(2026, 2, 26),
-        },
-        {
-            id: 2,
-            aluno_id: 2,
-            descricao: "Ajudou colegas em atividade de grupo",
-            data: new Date(2026, 2, 25),
-        },
-    ];
+async function getOcorrencia() {
+    const Ocorrencia = "http://localhost:3000/api/ocorrencia";
+    try{
+        const response = await fetch(Ocorrencia);
+        if(!response.ok){
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log(result)
+        return result;
+        
+    }catch(error){
+        console.error(error.message);
+    }
 }
 
+async function getDestaquePositivo() {
+    const DestaquePositivo = "http://localhost:3000/api/destaquePositivo";
+    try{
+        const response = await fetch(DestaquePositivo);
+        if(!response.ok){
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log(result)
+        return result;
+    }catch(error){
+        console.error(error.message);
+    }
+}
+
+async function criarOcorrencia(novaOcorrencia){
+    const url = "http://localhost:3000/api/ocorrencia/NovaOcorrencia";
+    try{
+        const response = await fetch(url,{
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(novaOcorrencia)
+        });
+
+        const result = await response.json();
+        console.log("Resposta do servidor:", result);
+    }catch(error){
+        console.error("Erro ao criar ocorrência:", error.message);
+    }
+}
+
+
+// // Inicializar dados de exemplo
+// function inicializarDados() {
+//     alunos = [
+//         { id: 1, matricula: 2026001, nome: "João Silva", turma: "Turma A" },
+//         { id: 2, matricula: 2026002, nome: "Maria Santos", turma: "Turma B" },
+//         { id: 3, matricula: 2026003, nome: "Pedro Oliveira", turma: "Turma A" },
+//     ];
+
+//     ocorrencias = [
+//         {
+//             id: 1,
+//             aluno_id: 1,
+//             tipo: 1,
+//             gravidade: 2,
+//             descricao: "Comportamento inadequado em sala",
+//             data: new Date(2026, 2, 28),
+//         },
+//         {
+//             id: 2,
+//             aluno_id: 2,
+//             tipo: 2,
+//             gravidade: 1,
+//             descricao: "Atraso na chegada à aula",
+//             data: new Date(2026, 2, 27),
+//         },
+//     ];
+
+//     destaques = [
+//         {
+//             id: 1,
+//             aluno_id: 1,
+//             descricao: "Excelente desempenho em matemática",
+//             data: new Date(2026, 2, 26),
+//         },
+//         {
+//             id: 2,
+//             aluno_id: 2,
+//             descricao: "Ajudou colegas em atividade de grupo",
+//             data: new Date(2026, 2, 25),
+//         },
+//     ];
+// }
+
 // Mostrar página específica
+
 function mostrarPagina(pagina) {
     // Esconder todas as páginas
     const pages = document.querySelectorAll('.page');
@@ -82,7 +126,12 @@ function mostrarPagina(pagina) {
 }
 
 // Atualizar dashboard
-function atualizarDashboard() {
+async function atualizarDashboard() {
+
+    const ocorrencias = await getOcorrencia();
+    const destaques = await getDestaquePositivo();
+    
+
     // Atualizar estatísticas
     const statCards = document.querySelectorAll('.stat-number');
     statCards[0].textContent = ocorrencias.length;
@@ -101,7 +150,7 @@ function atualizarDashboard() {
             .map(o => `
                 <div class="activity-item">
                     <p>${o.descricao}</p>
-                    <span class="date">${formatarData(o.data)}</span>
+                    <span class="date">${(formatarData(o.datahora))}</span>
                 </div>
             `)
             .join('');
@@ -122,7 +171,7 @@ function atualizarDashboard() {
             .map(d => `
                 <div class="activity-item">
                     <p>${d.descricao}</p>
-                    <span class="date">${formatarData(d.data)}</span>
+                    <span class="date">${formatarData(d.datahora)}</span>
                 </div>
             `)
             .join('');
@@ -172,28 +221,31 @@ function getClasseGravidade(gravidade) {
 function registrarOcorrencia(e) {
     e.preventDefault();
 
-    const alunoId = parseInt(document.getElementById('alunoId').value);
     const tipo = parseInt(document.getElementById('tipoOcorrencia').value);
-    const gravidade = parseInt(document.getElementById('gravidade').value);
     const descricao = document.getElementById('descricao').value;
     const acaoTomada = document.getElementById('acaoTomada').value;
+    const registradoPorID = parseInt(document.getElementById('registradoPorId').value);
+    const alunoId = parseInt(document.getElementById('alunoId').value);
+    
+    const gravidade = parseInt(document.getElementById('gravidade').value);
+        
 
-    if (!alunoId || !tipo || !gravidade || !descricao) {
+    if (!alunoId || !tipo || !gravidade || !descricao || !registradoPorID || !acaoTomada) {
         alert('Preencha todos os campos obrigatórios');
         return;
     }
 
     const novaOcorrencia = {
-        id: ocorrencias.length + 1,
-        aluno_id: alunoId,
-        tipo: tipo,
-        gravidade: gravidade,
+        dataHora: new Date(),
+        tipoOcorrencia: tipo,
         descricao: descricao,
-        acao_tomada: acaoTomada,
-        data: new Date(),
+        acaoTomada: acaoTomada,
+        registradoPor: registradoPorID,
+        alunoId: alunoId,
+        gravidadeId: gravidade
     };
 
-    ocorrencias.push(novaOcorrencia);
+    criarOcorrencia(novaOcorrencia);    
     alert('Ocorrência registrada com sucesso!');
 
     // Limpar formulário
@@ -347,7 +399,7 @@ function limparFiltros() {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function () {
-    inicializarDados();
+    // inicializarDados();
 
     // Formulário de ocorrência
     const formOcorrencia = document.getElementById('formOcorrencia');
@@ -399,5 +451,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Mostrar dashboard por padrão
     mostrarPagina('dashboard');
-    getUsuario();
+    
 });
