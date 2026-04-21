@@ -1,67 +1,94 @@
 
+
 async function getUsuario() {
     const Usuarios = "http://localhost:3000/api/usuario";
-    try{
+    try {
         const response = await fetch(Usuarios);
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error(`Respsonse status: ${response.status}`);
         }
-        
+
         const result = await response.json();
         console.log(result)
         return result;
-    }catch(error){
+    } catch (error) {
         console.error(error.message);
+    }
+}
+
+
+async function getUsuarioId(id) {
+    const url = `http://localhost:3000/api/usuario/id/{id}`
+    try {
+        const response = await fetch(url)
+        const data = await response.json();
+        console.log(data)
+    } catch (error) {
+        console.error("Usuario não encontrado", error.message)
     }
 }
 
 async function getOcorrencia() {
     const Ocorrencia = "http://localhost:3000/api/ocorrencia";
-    try{
+    try {
         const response = await fetch(Ocorrencia);
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
         const result = await response.json();
         console.log(result)
         return result;
-        
-    }catch(error){
+
+    } catch (error) {
         console.error(error.message);
     }
 }
 
 async function getDestaquePositivo() {
     const DestaquePositivo = "http://localhost:3000/api/destaquePositivo";
-    try{
+    try {
         const response = await fetch(DestaquePositivo);
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
         const result = await response.json();
         console.log(result)
         return result;
-    }catch(error){
+    } catch (error) {
         console.error(error.message);
     }
 }
 
-async function criarOcorrencia(novaOcorrencia){
+async function criarOcorrencia(novaOcorrencia) {
     const url = "http://localhost:3000/api/ocorrencia/NovaOcorrencia";
-    try{
-        const response = await fetch(url,{
+    try {
+        const response = await fetch(url, {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(novaOcorrencia)
         });
 
         const result = await response.json();
         console.log("Resposta do servidor:", result);
-    }catch(error){
+    } catch (error) {
         console.error("Erro ao criar ocorrência:", error.message);
     }
 }
 
+async function criarDestaque(novoDestaque) {
+    const url = "http://localhost:3000/api/destaquePositivo/NovoDestaque";
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(novoDestaque)
+        })
+        const result = await response.json()
+        console.log("Resposta do servidor:", result)
+    } catch (error) {
+        console.error("Erro ao criar o Destaque:", error.message)
+    }
+}
 
 // // Inicializar dados de exemplo
 // function inicializarDados() {
@@ -130,7 +157,7 @@ async function atualizarDashboard() {
 
     const ocorrencias = await getOcorrencia();
     const destaques = await getDestaquePositivo();
-    
+
 
     // Atualizar estatísticas
     const statCards = document.querySelectorAll('.stat-number');
@@ -226,9 +253,9 @@ function registrarOcorrencia(e) {
     const acaoTomada = document.getElementById('acaoTomada').value;
     const registradoPorID = parseInt(document.getElementById('registradoPorId').value);
     const alunoId = parseInt(document.getElementById('alunoId').value);
-    
+
     const gravidade = parseInt(document.getElementById('gravidade').value);
-        
+
 
     if (!alunoId || !tipo || !gravidade || !descricao || !registradoPorID || !acaoTomada) {
         alert('Preencha todos os campos obrigatórios');
@@ -245,7 +272,7 @@ function registrarOcorrencia(e) {
         gravidadeId: gravidade
     };
 
-    criarOcorrencia(novaOcorrencia);    
+    criarOcorrencia(novaOcorrencia);
     alert('Ocorrência registrada com sucesso!');
 
     // Limpar formulário
@@ -259,6 +286,8 @@ function registrarDestaque(e) {
 
     const alunoId = parseInt(document.getElementById('alunoIdDestaque').value);
     const descricao = document.getElementById('descricaoDestaque').value;
+    const registrado = parseInt(document.getElementById('resgistradoPor').value)
+
 
     if (!alunoId || !descricao) {
         alert('Preencha todos os campos obrigatórios');
@@ -266,13 +295,13 @@ function registrarDestaque(e) {
     }
 
     const novoDestaque = {
-        id: destaques.length + 1,
-        aluno_id: alunoId,
+        dataHora: new Date(),
         descricao: descricao,
-        data: new Date(),
+        registrado: registrado,
+        alunoId: alunoId
     };
 
-    destaques.push(novoDestaque);
+    criarDestaque(novoDestaque);
     alert('Destaque positivo registrado com sucesso!');
 
     // Limpar formulário
@@ -280,12 +309,21 @@ function registrarDestaque(e) {
     mostrarPagina('dashboard');
 }
 
+// Registrar aluno
+function registrarAluno(e){
+    e.preventDefault()
+
+    document.getElementById('formAluno').reset()
+    mostrarPagina('dashboard')
+}
+
 // Buscar aluno por matrícula
 function buscarAluno(e) {
     e.preventDefault();
 
     const matricula = parseInt(document.getElementById('matriculaBusca').value);
-    const aluno = alunos.find(a => a.matricula === matricula);
+    const aluno = getUsuarioId()
+    // const aluno = alunos.find(a => a.matricula === matricula);
 
     const resultadoBusca = document.getElementById('resultadoBusca');
 
@@ -413,6 +451,12 @@ document.addEventListener('DOMContentLoaded', function () {
         formDestaque.addEventListener('submit', registrarDestaque);
     }
 
+    // Formulário de aluno
+    const formAluno  = document.getElementById('formAluno')
+    if(formAluno){
+        formAluno.addEventListener('submit',registrarAluno)
+    }
+
     // Formulário de busca
     const formBusca = document.getElementById('formBusca');
     if (formBusca) {
@@ -451,5 +495,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Mostrar dashboard por padrão
     mostrarPagina('dashboard');
-    
+
 });

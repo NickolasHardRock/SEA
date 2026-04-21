@@ -38,6 +38,9 @@
                     <ul>
                         <li><a href="#" onclick="mostrarPagina('registrar-ocorrencia')">+ Registrar Ocorrência</a></li>
                         <li><a href="#" onclick="mostrarPagina('registrar-destaque')">+ Registrar Destaque</a></li>
+                        <li><a href="#" onclick="mostrarPagina('registrar-aluno')">+ Registrar Aluno</a></li>
+                        <li><a href="#" onclick="mostrarPagina('registrar-turma')">+ Registrar Turma</a></li>
+                        <li><a href="#" onclick="mostrarPagina('registrar-usurio')">+ Registrar Usuario</a></li>
                     </ul>
                 </div>
 
@@ -45,6 +48,7 @@
                     <h3>Consultas</h3>
                     <ul>
                         <li><a href="#" onclick="mostrarPagina('consultar-historico')">Consultar Histórico</a></li>
+                        <li><a href="#" onclick="mostrarPagina('consultar-turma')">Consultar Turma</a></li>
                         <li><a href="#" onclick="mostrarPagina('listar-ocorrencias')">Listar Ocorrências</a></li>
                     </ul>
                 </div>
@@ -91,17 +95,17 @@
                 <h2>Registrar Ocorrência</h2>
                 <form id="formOcorrencia" class="form">
                     <div class="form-group">
-                        <label for="alunoId"> Aluno *</label>
+                        <label for="alunoId"> Aluno </label>
                         <input type="number" id="alunoId" name="alunoId" placeholder="ID do aluno" required>
                     </div>
 
                      <div class="form-group">
-                        <label for="registradoPorId">Registrado Por  *</label>
+                        <label for="registradoPorId">Registrado Por  </label>
                         <input type="number" id="registradoPorId" name="registradoPorId" placeholder="ID do professor" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="tipoOcorrencia">Tipo de Ocorrência *</label>
+                        <label for="tipoOcorrencia">Tipo de Ocorrência </label>
                         <select id="tipoOcorrencia" name="tipoOcorrencia" required>
                             <option value="">Selecione um tipo</option>
                             <option value="1">Comportamento</option>
@@ -112,7 +116,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="gravidade">Gravidade *</label>
+                        <label for="gravidade">Gravidade </label>
                         <select id="gravidade" name="gravidade" required>
                             <option value="">Selecione a gravidade</option>
                             <option value="1">Leve</option>
@@ -122,7 +126,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="descricao">Descrição *</label>
+                        <label for="descricao">Descrição </label>
                         <textarea id="descricao" name="descricao" rows="4" required></textarea>
                     </div>
 
@@ -143,12 +147,16 @@
                 <h2>Registrar Destaque Positivo</h2>
                 <form id="formDestaque" class="form">
                     <div class="form-group">
-                        <label for="alunoIdDestaque">ID do Aluno *</label>
+                        <label for="resgistradoPor">ID do Professor </label>
+                        <input type="number" id="resgistradoPor" name="resgistradoPor" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="alunoIdDestaque">ID do Aluno </label>
                         <input type="number" id="alunoIdDestaque" name="alunoIdDestaque" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="descricaoDestaque">Descrição do Destaque *</label>
+                        <label for="descricaoDestaque">Descrição do Destaque </label>
                         <textarea id="descricaoDestaque" name="descricaoDestaque" rows="5" required></textarea>
                     </div>
 
@@ -158,6 +166,92 @@
                     </div>
                 </form>
             </section>
+           
+            <!-- Registrar Aluno -->
+             <section id="registrar-aluno" class="page" style="display: none;">
+                <h2>Registrar Aluno</h2>
+                <form id="formAluno" class="form">
+                    <div class="form-group">
+                        <label for="nome">Nome </label>
+                        <input type="text" id="nome" name="nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="matricula">Matricula </label>
+                        <input type="number" id="matricula" name="matricula" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="turma">Turma </label>
+                        <input type="number" id="turma" name="turma" required>
+                    </div>
+                
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-primary btn-success">Registrar Aluno</button>
+                        <button type="button" class="btn-secondary" onclick="mostrarPagina('dashboard')">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Registrar Turma -->
+            <section id="registrar-turma" class="page" style="display: none;">
+                <h2>Registrar Turma</h2>
+                <form id="formAluno" class="form">
+                    <div class="form-group">
+                        <label for="turma">Turma </label>
+                        <input type="text" id="turma" name="turma" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="responsavel">Responsavel ID </label>
+                        <input type="number" id="responsavel" name="responsavel" required>
+                    </div>
+                    
+                
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-primary btn-success">Registrar Turma</button>
+                        <button type="button" class="btn-secondary" onclick="mostrarPagina('dashboard')">Cancelar</button>
+                    </div>
+                </form>
+            </section>
+            <!-- Registrar Usuario -->
+             <section id="registrar-usurio" class="page" style="display: none;">
+                <h2>Registrar Usuario</h2>
+                <form id="formUsuario" class="form">
+                    <div class="form-group">
+                        <label for="nome">Nome *</label>
+                        <input type="text" id="nome" name="nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="text" id="email" name="email" required>
+                    </div>
+                     <div class="form-group">
+                        <label for="perfil">Perfil *</label>
+                        <select id="perfil" name="perfil" required>
+                            <option value="">Selecione o Perfil</option>
+                            <option value="1">Professor</option>
+                            <option value="2">Coordenardo</option>
+                            <option value="3">Diretor</option>
+                            <option value="4">Responsavel</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="senha">Senha *</label>
+                        <input type="password" id="senha" name="senha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="turma">Turma *</label>
+                        <input type="number" id="turma" name="turma" required>
+                    </div>
+                     <div class="form-buttons">
+                        <button type="submit" class="btn-primary btn-success">Registrar Usuario</button>
+                        <button type="button" class="btn-secondary" onclick="mostrarPagina('dashboard')">Cancelar</button>
+                    </div>
+                    
+
+
+
+                </form>
+
+             </section>
 
             <!-- Consultar Histórico -->
             <section id="consultar-historico" class="page" style="display: none;">
