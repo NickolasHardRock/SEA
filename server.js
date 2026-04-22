@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import UsuariosRoutes from './src/routes/UsuarioRoutes.js';
 import AlunosRoutes from './src/routes/AlunoRoutes.js';
 import DestaquePositivoRoutes from './src/routes/DestaquePositivo.js';
@@ -8,7 +9,7 @@ dotenv.config();
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json(),cors());
 
 const PORT = 3000;
 

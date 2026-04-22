@@ -1,6 +1,16 @@
 
 import pool from '../config/dbConnect.js'
 
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/dbConnect.js';
+
+const Usuario = sequelize.define('Usuario',{
+    id:{
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    }
+})
+
 
 export const findAll = async () => {
 

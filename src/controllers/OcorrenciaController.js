@@ -21,10 +21,13 @@ export const procurarOcorrencia = async(req,res) =>{
 
 export const inserirOcorrencia = async(req,res) =>{
     try{
-        const {dataHora,tipoOcorrencia,descricao,acaoTomada,registroPor,alunoId,gravidadeId} = req.body;
-        const novoOcorrencia = await create(dataHora,tipoOcorrencia,descricao,acaoTomada,registroPor,alunoId,gravidadeId);
+        const {dataHora,tipoOcorrencia,descricao,acaoTomada,registradoPor,alunoId,gravidadeId} = req.body;
+        const novoOcorrencia = await create(dataHora,tipoOcorrencia,descricao,acaoTomada,registradoPor,alunoId,gravidadeId);
+        console.log("Body recebido: ", req.body);
         return res.status(201).json(novoOcorrencia)
+        
     }catch(error){
+        console.log("Body recebido: ", req.body);
         return res.status(500).json({mensagem:'Erro ao criar esta ocorrencia ' + error.message});
     }
 }
@@ -32,7 +35,7 @@ export const inserirOcorrencia = async(req,res) =>{
 export const atualizarOcorrencia = async(req,res) =>{
     try{
       const id = Number(req.params.id); 
-      const {dataHora,tipoOcorrencia,descricao,acaoTomada,registroPor,alunoId,gravidadeId} = req.body;
+      const {dataHora,tipoOcorrencia,descricao,acaoTomada,registradoPor,alunoId,gravidadeId} = req.body;
 
       const updateOcorrencia = await update(tipoOcorrencia,descricao,acaoTomada,id);
       return res.status(201).json(updateOcorrencia);
