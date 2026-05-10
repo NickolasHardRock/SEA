@@ -1,12 +1,12 @@
 
-import pool from '../config/dbConnect.js'
+
 
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/dbConnect.js';
 
 const Usuario = sequelize.define('Usuario',{
     id:{
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         primaryKey: true,
         allowNull: true,
         autoIncrement: true
@@ -25,8 +25,6 @@ const Usuario = sequelize.define('Usuario',{
         type:DataTypes.TEXT,
         allowNull:false
     }
-
-    
 })
 
 export default Usuario

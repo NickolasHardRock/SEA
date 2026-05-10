@@ -3,7 +3,7 @@ import sequelize  from "../config/dbConnect";
 
 const Turma = sequelize.define('Turma',{
     id:{
-        type:DataTypes.INTEGER,
+        type:DataTypes.INTEGER.UNSIGNED,
         primaryKey:true,
         allowNull:true,
         autoIncrement:true
