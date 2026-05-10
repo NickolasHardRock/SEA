@@ -15,7 +15,9 @@ Repositório para o desenvolvimento da aplicação do projeto de extensão
 -- Criação das tabelas
 
 CREATE TYPE Perfil AS ENUM ('Professor', 'Coordenador', 'Diretor', 'Responsavel', 'Aluno');
+
 CREATE TYPE TipoOcorrencia AS ENUM ('Comportamento', 'Atraso', 'Rendimento', 'Material');
+
 CREATE TYPE Gravidade AS ENUM ('Leve', 'Media', 'Alta');
 
 CREATE TABLE Turma (
@@ -24,7 +26,7 @@ CREATE TABLE Turma (
     responsavel_id INT NOT NULL
 );
 
-create table Usuario (
+CREATE TABLE Usuario (
 	id serial primary key,
 	nome varchar(255) not null,
 	email varchar(255) unique,
