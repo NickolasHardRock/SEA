@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize  from "../config/dbConnect";
+import sequelize  from "../config/dbConnect.js";
 
 const Turma = sequelize.define('Turma',{
     id:{

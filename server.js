@@ -6,7 +6,10 @@ import UsuariosRoutes from './src/routes/UsuarioRoutes.js';
 import AlunosRoutes from './src/routes/AlunoRoutes.js';
 import DestaquePositivoRoutes from './src/routes/DestaquePositivo.js';
 import OcorrenciaRoutes from './src/routes/OcorrenciaRoutes.js';
+import {initModels} from './src/models/index.js'
 dotenv.config();
+
+initModels();
 
 const app = express();
 

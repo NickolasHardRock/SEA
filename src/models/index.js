@@ -1,4 +1,4 @@
-import sequelize from "../config/dbConnect";
+import sequelize from "../config/dbConnect.js";
 import Usuario from "../models/UsuarioModel.js"
 import DestaquePositivo from "../models/DestaquePositivoModel.js"
 import Ocorrencia from "../models/OcorrenciaModel.js"
@@ -44,8 +44,8 @@ return sequelize;
 
 };
 
-export default sequelize, Usuario, DestaquePositivo, Ocorrencia, Turma, initModels
-
+export {Usuario, DestaquePositivo, Ocorrencia, Turma, initModels
+}
 
 
 
