@@ -40,9 +40,11 @@ DestaquePositivo.belongsTo(Usuario,{
     foreignKey:'aluno_id'
 })
 
+return sequelize;
 
+};
 
-}
+export default sequelize, Usuario, DestaquePositivo, Ocorrencia, Turma, initModels
 
 
 

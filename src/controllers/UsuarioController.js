@@ -1,4 +1,4 @@
-import  { create, deletar, findAll, findIndex, update } from '../models/UsuarioModel.js';
+// import  { create, deletar, findAll, findIndex, update } from '../models/UsuarioModel.js';
 
 
 export const listarUsuarios = async (req,res) =>{

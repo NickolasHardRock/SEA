@@ -1,4 +1,4 @@
-import {findAll,findIndex,create,update,deletar} from '../models/AlunoModel.js';
+// import {findAll,findIndex,create,update,deletar} from '../models/AlunoModel.js';
 
 export const listarAlunos = async (req,res) =>{
     try{

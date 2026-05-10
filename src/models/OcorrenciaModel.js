@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/dbConnect";
+import sequelize from "../config/dbConnect.js";
 
 const Ocorrencia = sequelize.define('Ocorrencia',{
     id:{

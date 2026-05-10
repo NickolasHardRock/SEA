@@ -1,4 +1,4 @@
-import {findAll,findIndex,create,update,deletar} from '../models/OcorrenciaModel.js';
+// import {findAll,findIndex,create,update,deletar} from '../models/OcorrenciaModel.js';
 
 export const listarOcorrencia = async (req,res) =>{
     try{

@@ -1,4 +1,4 @@
-import  { create, deletar, findAll, findIndex, update } from '../models/DestaquePositivoModel.js';
+// import  { create, deletar, findAll, findIndex, update } from '../models/DestaquePositivoModel.js';
 
 
 export const listarDestaquePositivos= async (req,res) =>{
