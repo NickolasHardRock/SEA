@@ -76,45 +76,16 @@ async function carregarTodosDados() {
 
 // Inicializar dados de exemplo
 function inicializarDados() {
-    alunos = [
-        { id: 1, matricula: 2026001, nome: "João Silva", turma: "Turma A" },
-        { id: 2, matricula: 2026002, nome: "Maria Santos", turma: "Turma B" },
-        { id: 3, matricula: 2026003, nome: "Pedro Oliveira", turma: "Turma A" },
-    ];
+    if (alunos.length === 0) {
+        alunos = [
 
-    ocorrencias = [
-        {
-            id: 1,
-            aluno_id: 1,
-            tipo: 1,
-            gravidade: 2,
-            descricao: "Comportamento inadequado em sala",
-            data: new Date(2026, 2, 28),
-        },
-        {
-            id: 2,
-            aluno_id: 2,
-            tipo: 2,
-            gravidade: 1,
-            descricao: "Atraso na chegada à aula",
-            data: new Date(2026, 2, 27),
-        },
-    ];
+            { id_aluno: 1, matricula: 2026001, nome: "João Silva", turma: "Turma A" },
+            { id_aluno: 2, matricula: 2026002, nome: "Maria Santos", turma: "Turma B" },
+            { id_aluno: 3, matricula: 2026003, nome: "Pedro Oliveira", turma: "Turma A" },
 
-    destaques = [
-        {
-            id: 1,
-            aluno_id: 1,
-            descricao: "Excelente desempenho em matemática",
-            data: new Date(2026, 2, 26),
-        },
-        {
-            id: 2,
-            aluno_id: 2,
-            descricao: "Ajudou colegas em atividade de grupo",
-            data: new Date(2026, 2, 25),
-        },
-    ];
+
+        ];
+    }
 }
 
 // Mostrar página específica
@@ -155,7 +126,7 @@ function atualizarDashboard() {
             .map(o => `
                 <div class="activity-item">
                     <p>${o.descricao}</p>
-                    <span class="date">${formatarData(o.data)}</span>
+                    <span class="date">${formatarData(o.datahora)}</span>
                 </div>
             `)
             .join('');
@@ -176,7 +147,7 @@ function atualizarDashboard() {
             .map(d => `
                 <div class="activity-item">
                     <p>${d.descricao}</p>
-                    <span class="date">${formatarData(d.data)}</span>
+                    <span class="date">${formatarData(d.datahora)}</span>
                 </div>
             `)
             .join('');

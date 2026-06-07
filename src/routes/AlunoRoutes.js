@@ -1,17 +1,12 @@
 import express from 'express';
-import {listarAlunos,procurarAluno,inserirAluno,atualizarAluno,deleteAluno} from '../controllers/AlunoController.js';
-import pool from '../config/dbConnect.js';
+import {listarAlunos,procurarAluno,inserirAluno,atualizarAluno,deleteAluno} from '../controllers/AlunoControllerSimples.js';
 
 const router = express.Router();
 
-router.get('/',listarAlunos)
-
-router.get('/id/:id',procurarAluno)
-
-router.post('/NovoAluno',inserirAluno)
-
-router.put('/AtualizarAluno/:id',atualizarAluno)
-
-router.delete('/DeletarAluno/:id',deleteAluno)
+router.get('/',listarAlunos);
+router.get('/:id',procurarAluno);
+router.post('/',inserirAluno);
+router.put('/:id',atualizarAluno);
+router.delete('/:id',deleteAluno);
 
 export default router;

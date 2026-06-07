@@ -1,4 +1,4 @@
-import db from '../config/dbConnect.js';
+import db from '../config/sequelize.js';
 
 const { Usuario } = db;
 

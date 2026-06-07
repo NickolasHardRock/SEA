@@ -1,16 +1,12 @@
 import express from 'express';
-import {listarDestaquePositivos,procurarDestaquePostivio,inserirDestaquePositivo,atualizarDestaquePositivo,deleteDestaquePositivo} from '../controllers/DestaquePositivo.js';
+import {listarAlunos,procurarAluno,inserirAluno,atualizarAluno,deleteAluno} from '../controllers/AlunoControllerSimples.js';
 
 const router = express.Router();
 
-router.get('/',listarDestaquePositivos);
-
-router.get('/id/:id',procurarDestaquePostivio);
-
-router.post('/NovoDestaque',inserirDestaquePositivo);
-
-router.put('/AtualizarDestaque/:id',atualizarDestaquePositivo);
-
-router.delete('/DeletarDestaque/:id',deleteDestaquePositivo);
+router.get('/',listarAlunos);
+router.get('/:id',procurarAluno);
+router.post('/',inserirAluno);
+router.put('/:id',atualizarAluno);
+router.delete('/:id',deleteAluno);
 
 export default router;

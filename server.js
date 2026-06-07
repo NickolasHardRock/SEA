@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { connectDB } from './src/config/dbConnect.js';
+import { connectDB } from './src/config/sequelize.js';
 import UsuariosRoutes from './src/routes/UsuarioRoutes.js';
 import AlunosRoutes from './src/routes/AlunoRoutes.js';
 import DestaquePositivoRoutes from './src/routes/DestaquePositivo.js';
