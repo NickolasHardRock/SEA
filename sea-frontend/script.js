@@ -1,24 +1,78 @@
-// Dados simulados (em produção viriam do backend)
+// API Base URL
+const API_BASE = 'http://localhost:3000/api';
+
+// Dados do frontend
 let ocorrencias = [];
 let destaques = [];
 let alunos = [];
+let usuarios = [];
 
-async function getUsuario() {
-    const Usuarios = "http://localhost:3000/api/usuario";
-    try{
-        const response = await fetch(Usuarios);
-        if(!response.ok){
-            throw new Error(`Respsonse status: ${response.status}`);
+// Funções para carregar dados da API
+async function carregarAlunos() {
+    try {
+        const response = await fetch(`${API_BASE}/aluno`);
+        if (!response.ok) {
+            throw new Error(`Erro ao buscar alunos: ${response.status}`);
         }
-
-        const result = await response.json();
-        console.log(result);
-    }catch(error){
-        console.error(error.message);
+        alunos = await response.json();
+        console.log('Alunos carregados:', alunos);
+    } catch (error) {
+        console.error('Erro ao carregar alunos:', error.message);
+        alunos = [];
     }
 }
 
-getUsuario();
+async function carregarOcorrencias() {
+    try {
+        const response = await fetch(`${API_BASE}/ocorrencia`);
+        if (!response.ok) {
+            throw new Error(`Erro ao buscar ocorrências: ${response.status}`);
+        }
+        ocorrencias = await response.json();
+        console.log('Ocorrências carregadas:', ocorrencias);
+    } catch (error) {
+        console.error('Erro ao carregar ocorrências:', error.message);
+        ocorrencias = [];
+    }
+}
+
+async function carregarDestaques() {
+    try {
+        const response = await fetch(`${API_BASE}/destaquePositivo`);
+        if (!response.ok) {
+            throw new Error(`Erro ao buscar destaques: ${response.status}`);
+        }
+        destaques = await response.json();
+        console.log('Destaques carregados:', destaques);
+    } catch (error) {
+        console.error('Erro ao carregar destaques:', error.message);
+        destaques = [];
+    }
+}
+
+async function carregarUsuarios() {
+    try {
+        const response = await fetch(`${API_BASE}/usuario`);
+        if (!response.ok) {
+            throw new Error(`Erro ao buscar usuários: ${response.status}`);
+        }
+        usuarios = await response.json();
+        console.log('Usuários carregados:', usuarios);
+    } catch (error) {
+        console.error('Erro ao carregar usuários:', error.message);
+        usuarios = [];
+    }
+}
+
+// Carregar todos os dados ao iniciar
+async function carregarTodosDados() {
+    await Promise.all([
+        carregarAlunos(),
+        carregarOcorrencias(),
+        carregarDestaques(),
+        carregarUsuarios()
+    ]);
+}
 
 // Inicializar dados de exemplo
 function inicializarDados() {
@@ -169,7 +223,7 @@ function getClasseGravidade(gravidade) {
 }
 
 // Registrar ocorrência
-function registrarOcorrencia(e) {
+async function registrarOcorrencia(e) {
     e.preventDefault();
 
     const alunoId = parseInt(document.getElementById('alunoId').value);
@@ -183,26 +237,39 @@ function registrarOcorrencia(e) {
         return;
     }
 
-    const novaOcorrencia = {
-        id: ocorrencias.length + 1,
-        aluno_id: alunoId,
-        tipo: tipo,
-        gravidade: gravidade,
-        descricao: descricao,
-        acao_tomada: acaoTomada,
-        data: new Date(),
-    };
+    try {
+        const response = await fetch(`${API_BASE}/ocorrencia`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                dataHora: new Date().toISOString(),
+                tipoOcorrencia: tipo,
+                descricao: descricao,
+                acaoTomada: acaoTomada,
+                alunoId: alunoId,
+                registroPor: 1,
+                gravidadeId: gravidade,
+            }),
+        });
 
-    ocorrencias.push(novaOcorrencia);
-    alert('Ocorrência registrada com sucesso!');
+        if (!response.ok) {
+            throw new Error(`Erro ao criar ocorrência: ${response.status}`);
+        }
 
-    // Limpar formulário
-    document.getElementById('formOcorrencia').reset();
-    mostrarPagina('dashboard');
+        alert('Ocorrência registrada com sucesso!');
+        document.getElementById('formOcorrencia').reset();
+        await carregarOcorrencias();
+        mostrarPagina('dashboard');
+    } catch (error) {
+        console.error('Erro ao registrar ocorrência:', error);
+        alert('Erro ao registrar ocorrência: ' + error.message);
+    }
 }
 
 // Registrar destaque
-function registrarDestaque(e) {
+async function registrarDestaque(e) {
     e.preventDefault();
 
     const alunoId = parseInt(document.getElementById('alunoIdDestaque').value);
@@ -213,23 +280,36 @@ function registrarDestaque(e) {
         return;
     }
 
-    const novoDestaque = {
-        id: destaques.length + 1,
-        aluno_id: alunoId,
-        descricao: descricao,
-        data: new Date(),
-    };
+    try {
+        const response = await fetch(`${API_BASE}/destaquePositivo`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                dataHora: new Date().toISOString(),
+                descricao: descricao,
+                registrado: 1,
+                alunoId: alunoId,
+            }),
+        });
 
-    destaques.push(novoDestaque);
-    alert('Destaque positivo registrado com sucesso!');
+        if (!response.ok) {
+            throw new Error(`Erro ao criar destaque: ${response.status}`);
+        }
 
-    // Limpar formulário
-    document.getElementById('formDestaque').reset();
-    mostrarPagina('dashboard');
+        alert('Destaque positivo registrado com sucesso!');
+        document.getElementById('formDestaque').reset();
+        await carregarDestaques();
+        mostrarPagina('dashboard');
+    } catch (error) {
+        console.error('Erro ao registrar destaque:', error);
+        alert('Erro ao registrar destaque: ' + error.message);
+    }
 }
 
 // Buscar aluno por matrícula
-function buscarAluno(e) {
+async function buscarAluno(e) {
     e.preventDefault();
 
     const matricula = parseInt(document.getElementById('matriculaBusca').value);
@@ -239,41 +319,41 @@ function buscarAluno(e) {
 
     if (aluno) {
         // Mostrar resultado
-        document.getElementById('alunoNome').textContent = aluno.nome;
+        document.getElementById('alunoNome').textContent = aluno.nome || 'N/A';
         document.getElementById('alunoMatricula').textContent = aluno.matricula;
-        document.getElementById('alunoTurma').textContent = aluno.turma;
+        document.getElementById('alunoTurma').textContent = aluno.turma || 'N/A';
         document.getElementById('alunoStatus').textContent = 'Ativo';
 
         // Ocorrências do aluno
-        const ocorrenciasAluno = ocorrencias.filter(o => o.aluno_id === aluno.id);
+        const ocorrenciasAluno = ocorrencias.filter(o => o.aluno_id === aluno.id_aluno);
         const ocorrenciasHistorico = document.getElementById('ocorrenciasHistorico');
         if (ocorrenciasAluno.length > 0) {
             ocorrenciasHistorico.innerHTML = ocorrenciasAluno
                 .map(o => `
                     <div class="activity-item">
                         <p>${o.descricao}</p>
-                        <span class="date">${formatarData(o.data)}</span>
+                        <span class="date">${formatarData(o.datahora)}</span>
                     </div>
                 `)
                 .join('');
         } else {
-            ocorrenciasHistorico.textContent = 'Nenhuma ocorrência registrada';
+            ocorrenciasHistorico.innerHTML = '<p>Nenhuma ocorrência registrada</p>';
         }
 
         // Destaques do aluno
-        const destaquesAluno = destaques.filter(d => d.aluno_id === aluno.id);
+        const destaquesAluno = destaques.filter(d => d.aluno_id === aluno.id_aluno);
         const destaquesHistorico = document.getElementById('destaquesHistorico');
         if (destaquesAluno.length > 0) {
             destaquesHistorico.innerHTML = destaquesAluno
                 .map(d => `
                     <div class="activity-item">
                         <p>${d.descricao}</p>
-                        <span class="date">${formatarData(d.data)}</span>
+                        <span class="date">${formatarData(d.datahora)}</span>
                     </div>
                 `)
                 .join('');
         } else {
-            destaquesHistorico.textContent = 'Nenhum destaque registrado';
+            destaquesHistorico.innerHTML = '<p>Nenhum destaque registrado</p>';
         }
 
         resultadoBusca.style.display = 'block';
@@ -288,22 +368,22 @@ function listarOcorrenciasComFiltros() {
     const filtroTipo = document.getElementById('filtroTipo').value;
     const filtroGravidade = document.getElementById('filtroGravidade').value;
     const filtroPeriodo = document.getElementById('filtroPeriodo').value;
-    const filtroTurma = document.getElementById('filtroTurma').value;
 
     let ocorrenciasFiltrads = ocorrencias;
 
     if (filtroTipo) {
-        ocorrenciasFiltrads = ocorrenciasFiltrads.filter(o => o.tipo === parseInt(filtroTipo));
+        ocorrenciasFiltrads = ocorrenciasFiltrads.filter(o => o.tipo_ocorrencia === parseInt(filtroTipo));
     }
 
     if (filtroGravidade) {
-        ocorrenciasFiltrads = ocorrenciasFiltrads.filter(o => o.gravidade === parseInt(filtroGravidade));
+        ocorrenciasFiltrads = ocorrenciasFiltrads.filter(o => o.gravidade_id === parseInt(filtroGravidade));
     }
 
     if (filtroPeriodo) {
         ocorrenciasFiltrads = ocorrenciasFiltrads.filter(o => {
-            const mes = o.data.getMonth() + 1;
-            const ano = o.data.getFullYear();
+            const dataObj = new Date(o.datahora);
+            const mes = dataObj.getMonth() + 1;
+            const ano = dataObj.getFullYear();
             const filtroMes = filtroPeriodo.split('-')[1];
             const filtroAno = filtroPeriodo.split('-')[0];
             return mes === parseInt(filtroMes) && ano === parseInt(filtroAno);
@@ -315,15 +395,15 @@ function listarOcorrenciasComFiltros() {
     if (ocorrenciasFiltrads.length > 0) {
         tabelaOcorrencias.innerHTML = ocorrenciasFiltrads
             .map(o => {
-                const aluno = alunos.find(a => a.id === o.aluno_id);
+                const aluno = alunos.find(a => a.id_aluno === o.aluno_id);
                 return `
                     <tr>
-                        <td>${formatarData(o.data)}</td>
+                        <td>${formatarData(o.datahora)}</td>
                         <td>${aluno ? aluno.nome : 'N/A'}</td>
-                        <td>${getNomeTipo(o.tipo)}</td>
+                        <td>${getNomeTipo(o.tipo_ocorrencia)}</td>
                         <td>
-                            <span class="gravidade-badge ${getClasseGravidade(o.gravidade)}">
-                                ${getNomeGravidade(o.gravidade)}
+                            <span class="gravidade-badge ${getClasseGravidade(o.gravidade_id)}">
+                                ${getNomeGravidade(o.gravidade_id)}
                             </span>
                         </td>
                         <td>${o.descricao}</td>
@@ -341,13 +421,13 @@ function limparFiltros() {
     document.getElementById('filtroTipo').value = '';
     document.getElementById('filtroGravidade').value = '';
     document.getElementById('filtroPeriodo').value = '';
-    document.getElementById('filtroTurma').value = '';
     listarOcorrenciasComFiltros();
 }
 
 // Event Listeners
-document.addEventListener('DOMContentLoaded', function () {
-    inicializarDados();
+document.addEventListener('DOMContentLoaded', async function () {
+    // Carregar todos os dados da API
+    await carregarTodosDados();
 
     // Formulário de ocorrência
     const formOcorrencia = document.getElementById('formOcorrencia');
@@ -371,7 +451,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const filtroTipo = document.getElementById('filtroTipo');
     const filtroGravidade = document.getElementById('filtroGravidade');
     const filtroPeriodo = document.getElementById('filtroPeriodo');
-    const filtroTurma = document.getElementById('filtroTurma');
 
     if (filtroTipo) {
         filtroTipo.addEventListener('change', listarOcorrenciasComFiltros);
@@ -382,9 +461,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (filtroPeriodo) {
         filtroPeriodo.addEventListener('change', listarOcorrenciasComFiltros);
     }
-    if (filtroTurma) {
-        filtroTurma.addEventListener('change', listarOcorrenciasComFiltros);
-    }
 
     // Botão sair
     const btnSair = document.getElementById('btnSair');
@@ -392,12 +468,10 @@ document.addEventListener('DOMContentLoaded', function () {
         btnSair.addEventListener('click', function () {
             if (confirm('Deseja sair do sistema?')) {
                 alert('Você foi desconectado');
-                // Em produção, redirecionar para login
             }
         });
     }
 
     // Mostrar dashboard por padrão
     mostrarPagina('dashboard');
-    getUsuario();
 });

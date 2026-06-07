@@ -1,95 +1,94 @@
 
-import pool from '../config/dbConnect.js'
-
+import db from '../config/dbConnect.js'
 
 export const findAll = async () => {
-
-    const sql = `SELECT 
-    id_usuario,
-    nome,
-    email,
-    perfil,
-    senha
-    FROM usuario 
-	ORDER BY id_usuario DESC
-    `;
-    try {
-        const result = await pool.query(sql);
-        return result.rows;
-    } catch (error) {
-        console.error('Erro ao buscar usuários:', error);
-        throw error;
-    }
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT 
+            id_usuario,
+            nome,
+            email,
+            perfil,
+            senha
+            FROM usuario 
+            ORDER BY id_usuario DESC`;
+        
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                console.error('Erro ao buscar usuários:', err);
+                reject(err);
+            } else {
+                resolve(rows || []);
+            }
+        });
+    });
 };
 
 export const findIndex = async (id) => {
-    const sql = `
-    SELECT
-    id_usuario,
-    nome,
-    email,
-    perfil,
-    senha
-    FROM 
-    usuario
-    WHERE 
-    id_usuario = $1
-    `;
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT
+            id_usuario,
+            nome,
+            email,
+            perfil,
+            senha
+            FROM usuario
+            WHERE id_usuario = ?`;
 
-    try {
-        const result = await pool.query(sql, [id]);
-        return result.rows;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
+        db.get(sql, [id], (err, row) => {
+            if (err) {
+                console.error(err);
+                reject(err);
+            } else {
+                resolve(row ? [row] : []);
+            }
+        });
+    });
 };
 
 export const create = async (nome, email, perfil, senha) => {
-    const sql = `
-    INSERT INTO usuario (nome,email,perfil,senha) VALUES ($1,$2,$3,$4)
-`;
+    return new Promise((resolve, reject) => {
+        const sql = `INSERT INTO usuario (nome, email, perfil, senha) 
+                     VALUES (?, ?, ?, ?)`;
 
-    try {
-        const result = await pool.query(sql, [nome, email, perfil, senha]);
-        return result.rows;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
+        db.run(sql, [nome, email, perfil, senha], function(err) {
+            if (err) {
+                console.error(err);
+                reject(err);
+            } else {
+                resolve({ id_usuario: this.lastID, nome, email, perfil, senha });
+            }
+        });
+    });
 };
 
 export const update = async (nome, email, perfil, senha, id) => {
-    const sql = ` 
-    UPDATE usuario 
-    SET  
-    nome = $1, 
-    email = $2, 
-    perfil = $3, 
-    senha = $4 
-    WHERE id_usuario = $5
-    `;
+    return new Promise((resolve, reject) => {
+        const sql = `UPDATE usuario 
+                     SET nome = ?, email = ?, perfil = ?, senha = ?
+                     WHERE id_usuario = ?`;
 
-    try {
-        const result = await pool.query(sql, [nome, email, perfil, senha, id]);
-        return result.rows;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
+        db.run(sql, [nome, email, perfil, senha, id], function(err) {
+            if (err) {
+                console.error(err);
+                reject(err);
+            } else {
+                resolve({ id_usuario: id, nome, email, perfil, senha });
+            }
+        });
+    });
 };
 
 export const deletar = async (id) => {
-    const sql = `
-    DELETE FROM usuario
-    WHERE id_usuario = $1
-    `;
-    try{
-        const result = await pool.query(sql,[id]);
-        return result.rows;
-    }catch(error){
-        console.error(error);
-        throw error;
-    }
-
+    return new Promise((resolve, reject) => {
+        const sql = `DELETE FROM usuario WHERE id_usuario = ?`;
+        
+        db.run(sql, [id], function(err) {
+            if (err) {
+                console.error(err);
+                reject(err);
+            } else {
+                resolve({ deletado: this.changes > 0 });
+            }
+        });
+    });
 }

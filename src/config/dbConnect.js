@@ -1,18 +1,22 @@
+import sqlite3 from 'sqlite3';
 import dotenv from 'dotenv';
-import pg from 'pg';
-
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
-const {Pool} = pg;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const dbPath = path.join(__dirname, '../../gea.db');
 
-const pool = new Pool({
-  user: process.env.DB_USER,       // seu usuário
-  host: process.env.DB_HOST,      // ou IP do servidor
-  database: process.env.DB_NAME,        // nome do banco
-  password: process.env.DB_PASS,  // senha definida na instalação
-  port: process.env.DB_PORT,         
-})
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('Erro ao conectar ao SQLite:', err);
+  } else {
+    console.log('Conectado ao banco SQLite: ' + dbPath);
+    db.run("PRAGMA foreign_keys = ON");
+  }
+});
 
-export default  pool;
+export default db;
 
