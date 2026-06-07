@@ -7,6 +7,7 @@ import UsuariosRoutes from './src/routes/UsuarioRoutes.js';
 import AlunosRoutes from './src/routes/AlunoRoutes.js';
 import DestaquePositivoRoutes from './src/routes/DestaquePositivo.js';
 import OcorrenciaRoutes from './src/routes/OcorrenciaRoutes.js';
+import './src/models/associations.js';
 
 dotenv.config();
 
@@ -27,10 +28,6 @@ app.use('/api/aluno', AlunosRoutes);
 app.use('/api/destaquePositivo', DestaquePositivoRoutes);
 app.use('/api/ocorrencia', OcorrenciaRoutes);
 
-// Servir index.html para rotas não encontradas
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'sea-frontend', 'index.html'));
-});
 
 const PORT = process.env.PORT || 3000;
 

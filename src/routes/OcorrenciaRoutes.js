@@ -1,5 +1,5 @@
 import express from 'express';
-import {listarOcorrencia,procurarOcorrencia,inserirOcorrencia,atualizarOcorrencia,deleteOcorrencia} from '../controllers/OcorrenciaControllerSimples.js';
+import {listarOcorrencia,procurarOcorrencia,inserirOcorrencia,atualizarOcorrencia,deleteOcorrencia} from '../controllers/OcorrenciaController.js';
 
 const router = express.Router();
 

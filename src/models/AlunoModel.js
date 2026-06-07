@@ -1,25 +1,36 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/sequelize.js';
 
-const Aluno = sequelize.define('Aluno', {
-  id_aluno: {
+const Usuario = sequelize.define('Usuario', {
+  id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
+  },
+  nome: {
+    type: DataTypes.STRING,
+  },
+  email: {
+    type: DataTypes.STRING,
+    unique: true,
+  },
+  perfil: {
+    type: DataTypes.ENUM('professor', 'coordenador', 'diretor'),
+    allowNull: false,
+  },
+  senha: {
+    type: DataTypes.STRING,
   },
   matricula: {
     type: DataTypes.INTEGER,
     unique: true,
   },
-  turma: {
-    type: DataTypes.STRING,
-  },
-  usuario_id: {
+  turma_id: {
     type: DataTypes.INTEGER,
   },
 }, {
-  tableName: 'aluno',
+  tableName: 'usuario',
   timestamps: false,
 });
 
-export default Aluno;
+export default Usuario;

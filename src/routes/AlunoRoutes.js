@@ -1,5 +1,5 @@
 import express from 'express';
-import {listarAlunos,procurarAluno,inserirAluno,atualizarAluno,deleteAluno} from '../controllers/AlunoControllerSimples.js';
+import {listarAlunos,procurarAluno,inserirAluno,atualizarAluno,deleteAluno} from '../controllers/AlunoController.js';
 
 const router = express.Router();
 
