@@ -1,18 +1,22 @@
-import Aluno from './AlunoModel.js';
+
 import Usuario from './UsuarioModel.js';
 import Ocorrencia from './OcorrenciaModel.js';
 import DestaquePositivo from './DestaquePositivoModel.js';
+import Turma from './turmaModel.js';
 
 // Definição das associações
-Aluno.belongsTo(Usuario, { foreignKey: 'usuario_id', as: 'usuario' });
-Aluno.hasMany(DestaquePositivo, { foreignKey: 'aluno_id', as: 'destaques' });
-Aluno.hasMany(Ocorrencia, { foreignKey: 'aluno_id', as: 'ocorrencias' });
 
-DestaquePositivo.belongsTo(Aluno, { foreignKey: 'aluno_id', as: 'aluno' });
+Turma.hasMany(Usuario, { foreignKey: 'turma_id', as: 'usuarios' });
+Usuario.belongsTo(Turma, { foreignKey: 'turma_id', as: 'turma' });
+
+Usuario.hasMany(DestaquePositivo, { foreignKey: 'usuario_id', as: 'destaques' });
+Usuario.hasMany(Ocorrencia, { foreignKey: 'usuario_id', as: 'ocorrencias' });
+
+DestaquePositivo.belongsTo(Usuario, { foreignKey: 'usuario_id', as: 'usuario' });
 DestaquePositivo.belongsTo(Usuario, { foreignKey: 'registrado_por', as: 'registradoPor' });
 
-Ocorrencia.belongsTo(Aluno, { foreignKey: 'aluno_id', as: 'aluno' });
-Ocorrencia.belongsTo(Usuario, { foreignKey: 'registrado_por', as: 'registradoPor' });
+Ocorrencia.belongsTo(Usuario, { foreignKey: 'usuario_id', as: 'usuario' });
+Ocorrencia.belongsTo(Usuario, { foreignKey: 'registrado_por', as: 'registradoPor' })
 
 // Exporta todos os modelos com as associações aplicadas
-export { Aluno, Usuario, Ocorrencia, DestaquePositivo };
+export { Usuario, Ocorrencia, DestaquePositivo, Turma };

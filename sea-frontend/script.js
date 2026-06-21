@@ -4,32 +4,40 @@ const API_BASE = 'http://localhost:3000/api';
 // Dados do frontend
 let ocorrencias = [];
 let destaques = [];
-let alunos = [];
+let turmas = [];
 let usuarios = [];
 
 // Funções para carregar dados da API
-async function carregarAlunos() {
+async function carregarUsuario() {
     try {
-        const response = await fetch(`${API_BASE}/aluno`);
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar alunos: ${response.status}`);
-        }
+        const response = await fetch(`${API_BASE}/usuario`);
+        if (!response.ok) throw new Error(`Erro ao buscar alunos: ${response.status}`);
         alunos = await response.json();
-        console.log('Alunos carregados:', alunos);
     } catch (error) {
         console.error('Erro ao carregar alunos:', error.message);
         alunos = [];
     }
 }
 
+async function carregarTurmas() {
+    try {
+        const response = await fetch(`${API_BASE}/turma`);
+        if (!response.ok) throw new Error(`Erro ao buscar turmas: ${response.status}`);
+        turmas = await response.json();
+        atualizarTabelaTurmas();
+        atualizarSelectTurmas();
+        atualizarSelectTurmasListagem();
+    } catch (error) {
+        console.error('Erro ao carregar turmas:', error.message);
+        turmas = [];
+    }
+}
+
 async function carregarOcorrencias() {
     try {
         const response = await fetch(`${API_BASE}/ocorrencia`);
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar ocorrências: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Erro ao buscar ocorrências: ${response.status}`);
         ocorrencias = await response.json();
-        console.log('Ocorrências carregadas:', ocorrencias);
     } catch (error) {
         console.error('Erro ao carregar ocorrências:', error.message);
         ocorrencias = [];
@@ -39,410 +47,251 @@ async function carregarOcorrencias() {
 async function carregarDestaques() {
     try {
         const response = await fetch(`${API_BASE}/destaquePositivo`);
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar destaques: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Erro ao buscar destaques: ${response.status}`);
         destaques = await response.json();
-        console.log('Destaques carregados:', destaques);
     } catch (error) {
         console.error('Erro ao carregar destaques:', error.message);
         destaques = [];
     }
 }
 
-async function carregarUsuarios() {
-    try {
-        const response = await fetch(`${API_BASE}/usuario`);
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar usuários: ${response.status}`);
-        }
-        usuarios = await response.json();
-        console.log('Usuários carregados:', usuarios);
-    } catch (error) {
-        console.error('Erro ao carregar usuários:', error.message);
-        usuarios = [];
-    }
-}
-
 // Carregar todos os dados ao iniciar
 async function carregarTodosDados() {
     await Promise.all([
-        carregarAlunos(),
+        carregarUsuario(),
+        carregarTurmas(),
         carregarOcorrencias(),
-        carregarDestaques(),
-        carregarUsuarios()
+        carregarDestaques()
     ]);
-}
-
-// Inicializar dados de exemplo
-function inicializarDados() {
-    if (alunos.length === 0) {
-        alunos = [
-
-            { id_aluno: 1, matricula: 2026001, nome: "João Silva", turma: "Turma A" },
-            { id_aluno: 2, matricula: 2026002, nome: "Maria Santos", turma: "Turma B" },
-            { id_aluno: 3, matricula: 2026003, nome: "Pedro Oliveira", turma: "Turma A" },
-
-
-        ];
-    }
 }
 
 // Mostrar página específica
 function mostrarPagina(pagina) {
-    // Esconder todas as páginas
     const pages = document.querySelectorAll('.page');
     pages.forEach(page => page.style.display = 'none');
 
-    // Mostrar página selecionada
     const page = document.getElementById(pagina);
     if (page) {
         page.style.display = 'block';
     }
 
-    // Se for dashboard, atualizar dados
     if (pagina === 'dashboard') {
         atualizarDashboard();
     }
 }
 
+// Atualizar Tabela de Turmas
+function atualizarTabelaTurmas() {
+    const tabela = document.getElementById('tabelaTurmas');
+    if (!tabela) return;
+
+    if (turmas.length > 0) {
+        tabela.innerHTML = turmas.map(t => `
+            <tr>
+                <td>${t.id}</td>
+                <td>${t.nome}</td>
+                <td>
+                    <button class="btn-sair" style="padding: 5px 10px; font-size: 12px;" onclick="deletarTurma(${t.id})">Excluir</button>
+                </td>
+            </tr>
+        `).join('');
+    } else {
+        tabela.innerHTML = '<tr><td colspan="3" class="empty-message">Nenhuma turma cadastrada</td></tr>';
+    }
+}
+
+// Atualizar Select de Turmas no form de Aluno
+function atualizarSelectTurmas() {
+    const select = document.getElementById('turmaAlunoSelect');
+    if (!select) return;
+
+    const options = turmas.map(t => `<option value="${t.id}">${t.nome}</option>`).join('');
+    select.innerHTML = '<option value="">Selecione uma turma</option>' + options;
+}
+
+// Atualizar Select de Turmas na listagem de alunos por turma
+function atualizarSelectTurmasListagem(){
+    const select = document.getElementById('filtroTurmaSelect');
+    if(!select) return;
+
+    const options = turmas.map(t => `<option value="${t.id}">${t.nome}</option>`).join('');
+    select.innerHTML = '<option value="">Selecione uma turma</option>' + options;
+}
+
+// Criar Turma
+async function criarTurma(e) {
+    e.preventDefault();
+    const nome = document.getElementById('nomeTurma').value;
+
+    try {
+        const response = await fetch(`${API_BASE}/turma`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome })
+        });
+
+        if (!response.ok) throw new Error('Erro ao criar turma');
+
+        alert('Turma criada com sucesso!');
+        document.getElementById('formTurma').reset();
+        await carregarTurmas();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+// Deletar Turma
+async function deletarTurma(id) {
+    if (!confirm('Deseja realmente excluir esta turma?')) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/turma/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error('Erro ao excluir turma');
+
+        alert('Turma excluída com sucesso!');
+        await carregarTurmas();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+// Adicionar Aluno
+async function adicionarAluno(e) {
+    e.preventDefault();
+    const nome = document.getElementById('nomeAluno').value;
+    const matricula = document.getElementById('matriculaAluno').value;
+    const turma_id = document.getElementById('turmaAlunoSelect').value;
+    const perfil = "Aluno"
+
+    try {
+        const response = await fetch(`${API_BASE}/usuario/NovoUsuario/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome, matricula, turma_id,perfil })
+        });
+
+        if (!response.ok) throw new Error('Erro ao adicionar aluno');
+
+        alert('Aluno adicionado com sucesso!');
+        document.getElementById('formAdicionarAluno').reset();
+        await carregarUsuario();
+        mostrarPagina('dashboard');
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+// Listar alunos por turma selecionada
+function listarAlunosPorTurma(){
+    const turmaId = document.getElementById('filtroTurmaSelect').value;
+    const tabela = document.getElementById('tabelaAlunosTurma');
+    const estatisticas = document.getElementById('estatisticasTurma');
+
+    if(!turmaId){
+        tabela.innerHTML = '<tr> <td colspan="3" class="empty-message"> Selecione uma turma para visualizar os alunos</td></tr>';
+        estatisticas.style.display = 'none';
+        return;
+    }
+
+    // Filtrar alunos pela turma selecionada
+    const alunosDaTurma = alunos.filter(a => a.turma_id == turmaId);
+    
+
+    if(alunosDaTurma.length > 0){
+        tabela.innerHTML =alunosDaTurma.map(aluno =>
+            `
+            <tr>
+                <td>${aluno.nome}</td>
+                <td>${aluno.matricula}</td>
+                <td>${obterNomeTurma(aluno.turma_id)}</td>
+                <td><span style="color: green; font-weight: bold;">Ativo</span></td>
+            </tr>
+            `).join('');
+    }else{
+        tabela.innerHTML = '<tr><td colspan="5" class="empty-message">Nenhum aluno encontrado nesta turma</td></tr>';
+    }
+
+    //Atualizar estatísticas da turma
+    atualizarEstatisticasTurma(turmaId,alunosDaTurma);
+    estatisticas.style.display = 'block';
+
+}
+
+// Obter nome da turma pelo ID
+function atualizarEstatisticasTurma(turmaId,alunosDaTurma){
+    //Total de Alunos
+    document.getElementById('totalAlunosTurma').textContent = alunosDaTurma.length;
+
+
+    // Alunos com ocorrências
+    const alunosComOcorrecias = new Set(
+        ocorrencias
+            .filter(o => alunosDaTurma.some(a => a.id == o.aluno_id))
+            .map(o => o.aluno_id)
+    ).size;
+    document.getElementById('alunosComOcorrencias').textContent = alunosComOcorrecias;
+
+    // Alunos com destaques 
+    const alunoComDestaques = new Set(
+        destaques
+            .filter(d => alunosDaTurma.some(a => a.id == d.aluno_id))
+            .map(o => o.aluno_id)
+    ).size;
+    document.getElementById('alunosComDestaques').textContent = alunoComDestaques;
+}
+
+// Obter nome da turma pelo ID
+function obterNomeTurma(turmaId) {
+    const turma = turmas.find(t => t.id == turmaId);
+    return turma ? turma.nome : '-';
+}
+
 // Atualizar dashboard
 function atualizarDashboard() {
-    // Atualizar estatísticas
     const statCards = document.querySelectorAll('.stat-number');
-    statCards[0].textContent = ocorrencias.length;
-    statCards[1].textContent = destaques.length;
-    statCards[2].textContent = new Set(ocorrencias.map(o => o.aluno_id)).size;
+    if (statCards.length >= 3) {
+        statCards[0].textContent = ocorrencias.length;
+        statCards[1].textContent = destaques.length;
+        statCards[2].textContent = new Set(ocorrencias.map(o => o.aluno_id)).size;
+    }
 
-    // Atualizar ocorrências recentes
     const listaOcorrencias = document.getElementById('listaOcorrenciasRecentes');
     const ocorrenciasVazias = document.getElementById('ocorrenciasVazias');
 
-    if (ocorrencias.length > 0) {
-        ocorrenciasVazias.style.display = 'none';
-        listaOcorrencias.innerHTML = ocorrencias
-            .slice(-3)
-            .reverse()
-            .map(o => `
+    if (listaOcorrencias && ocorrenciasVazias) {
+        if (ocorrencias.length > 0) {
+            ocorrenciasVazias.style.display = 'none';
+            listaOcorrencias.innerHTML = ocorrencias.slice(-3).reverse().map(o => `
                 <div class="activity-item">
                     <p>${o.descricao}</p>
                     <span class="date">${formatarData(o.datahora)}</span>
                 </div>
-            `)
-            .join('');
-    } else {
-        ocorrenciasVazias.style.display = 'block';
-        listaOcorrencias.innerHTML = '';
-    }
-
-    // Atualizar destaques recentes
-    const listaDestaques = document.getElementById('listaDestaquesRecentes');
-    const destaquesVazios = document.getElementById('destaquesVazios');
-
-    if (destaques.length > 0) {
-        destaquesVazios.style.display = 'none';
-        listaDestaques.innerHTML = destaques
-            .slice(-3)
-            .reverse()
-            .map(d => `
-                <div class="activity-item">
-                    <p>${d.descricao}</p>
-                    <span class="date">${formatarData(d.datahora)}</span>
-                </div>
-            `)
-            .join('');
-    } else {
-        destaquesVazios.style.display = 'block';
-        listaDestaques.innerHTML = '';
+            `).join('');
+        } else {
+            ocorrenciasVazias.style.display = 'block';
+            listaOcorrencias.innerHTML = '';
+        }
     }
 }
 
-// Formatar data
 function formatarData(data) {
     return new Date(data).toLocaleDateString('pt-BR');
 }
 
-// Obter nome do tipo de ocorrência
-function getNomeTipo(tipo) {
-    const tipos = {
-        1: 'Comportamento',
-        2: 'Atraso',
-        3: 'Rendimento',
-        4: 'Material',
-    };
-    return tipos[tipo] || 'N/A';
-}
-
-// Obter nome da gravidade
-function getNomeGravidade(gravidade) {
-    const gravidades = {
-        1: 'Leve',
-        2: 'Média',
-        3: 'Alta',
-    };
-    return gravidades[gravidade] || 'N/A';
-}
-
-// Obter classe CSS da gravidade
-function getClasseGravidade(gravidade) {
-    const classes = {
-        1: 'gravidade-leve',
-        2: 'gravidade-media',
-        3: 'gravidade-alta',
-    };
-    return classes[gravidade] || '';
-}
-
-// Registrar ocorrência
-async function registrarOcorrencia(e) {
-    e.preventDefault();
-
-    const alunoId = parseInt(document.getElementById('alunoId').value);
-    const tipo = parseInt(document.getElementById('tipoOcorrencia').value);
-    const gravidade = parseInt(document.getElementById('gravidade').value);
-    const descricao = document.getElementById('descricao').value;
-    const acaoTomada = document.getElementById('acaoTomada').value;
-
-    if (!alunoId || !tipo || !gravidade || !descricao) {
-        alert('Preencha todos os campos obrigatórios');
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_BASE}/ocorrencia`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                dataHora: new Date().toISOString(),
-                tipoOcorrencia: tipo,
-                descricao: descricao,
-                acaoTomada: acaoTomada,
-                alunoId: alunoId,
-                registroPor: 1,
-                gravidadeId: gravidade,
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Erro ao criar ocorrência: ${response.status}`);
-        }
-
-        alert('Ocorrência registrada com sucesso!');
-        document.getElementById('formOcorrencia').reset();
-        await carregarOcorrencias();
-        mostrarPagina('dashboard');
-    } catch (error) {
-        console.error('Erro ao registrar ocorrência:', error);
-        alert('Erro ao registrar ocorrência: ' + error.message);
-    }
-}
-
-// Registrar destaque
-async function registrarDestaque(e) {
-    e.preventDefault();
-
-    const alunoId = parseInt(document.getElementById('alunoIdDestaque').value);
-    const descricao = document.getElementById('descricaoDestaque').value;
-
-    if (!alunoId || !descricao) {
-        alert('Preencha todos os campos obrigatórios');
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_BASE}/destaquePositivo`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                dataHora: new Date().toISOString(),
-                descricao: descricao,
-                registrado: 1,
-                alunoId: alunoId,
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Erro ao criar destaque: ${response.status}`);
-        }
-
-        alert('Destaque positivo registrado com sucesso!');
-        document.getElementById('formDestaque').reset();
-        await carregarDestaques();
-        mostrarPagina('dashboard');
-    } catch (error) {
-        console.error('Erro ao registrar destaque:', error);
-        alert('Erro ao registrar destaque: ' + error.message);
-    }
-}
-
-// Buscar aluno por matrícula
-async function buscarAluno(e) {
-    e.preventDefault();
-
-    const matricula = parseInt(document.getElementById('matriculaBusca').value);
-    const aluno = alunos.find(a => a.matricula === matricula);
-
-    const resultadoBusca = document.getElementById('resultadoBusca');
-
-    if (aluno) {
-        // Mostrar resultado
-        document.getElementById('alunoNome').textContent = aluno.nome || 'N/A';
-        document.getElementById('alunoMatricula').textContent = aluno.matricula;
-        document.getElementById('alunoTurma').textContent = aluno.turma || 'N/A';
-        document.getElementById('alunoStatus').textContent = 'Ativo';
-
-        // Ocorrências do aluno
-        const ocorrenciasAluno = ocorrencias.filter(o => o.aluno_id === aluno.id_aluno);
-        const ocorrenciasHistorico = document.getElementById('ocorrenciasHistorico');
-        if (ocorrenciasAluno.length > 0) {
-            ocorrenciasHistorico.innerHTML = ocorrenciasAluno
-                .map(o => `
-                    <div class="activity-item">
-                        <p>${o.descricao}</p>
-                        <span class="date">${formatarData(o.datahora)}</span>
-                    </div>
-                `)
-                .join('');
-        } else {
-            ocorrenciasHistorico.innerHTML = '<p>Nenhuma ocorrência registrada</p>';
-        }
-
-        // Destaques do aluno
-        const destaquesAluno = destaques.filter(d => d.aluno_id === aluno.id_aluno);
-        const destaquesHistorico = document.getElementById('destaquesHistorico');
-        if (destaquesAluno.length > 0) {
-            destaquesHistorico.innerHTML = destaquesAluno
-                .map(d => `
-                    <div class="activity-item">
-                        <p>${d.descricao}</p>
-                        <span class="date">${formatarData(d.datahora)}</span>
-                    </div>
-                `)
-                .join('');
-        } else {
-            destaquesHistorico.innerHTML = '<p>Nenhum destaque registrado</p>';
-        }
-
-        resultadoBusca.style.display = 'block';
-    } else {
-        alert('Aluno não encontrado');
-        resultadoBusca.style.display = 'none';
-    }
-}
-
-// Listar ocorrências com filtros
-function listarOcorrenciasComFiltros() {
-    const filtroTipo = document.getElementById('filtroTipo').value;
-    const filtroGravidade = document.getElementById('filtroGravidade').value;
-    const filtroPeriodo = document.getElementById('filtroPeriodo').value;
-
-    let ocorrenciasFiltrads = ocorrencias;
-
-    if (filtroTipo) {
-        ocorrenciasFiltrads = ocorrenciasFiltrads.filter(o => o.tipo_ocorrencia === parseInt(filtroTipo));
-    }
-
-    if (filtroGravidade) {
-        ocorrenciasFiltrads = ocorrenciasFiltrads.filter(o => o.gravidade_id === parseInt(filtroGravidade));
-    }
-
-    if (filtroPeriodo) {
-        ocorrenciasFiltrads = ocorrenciasFiltrads.filter(o => {
-            const dataObj = new Date(o.datahora);
-            const mes = dataObj.getMonth() + 1;
-            const ano = dataObj.getFullYear();
-            const filtroMes = filtroPeriodo.split('-')[1];
-            const filtroAno = filtroPeriodo.split('-')[0];
-            return mes === parseInt(filtroMes) && ano === parseInt(filtroAno);
-        });
-    }
-
-    // Preencher tabela
-    const tabelaOcorrencias = document.getElementById('tabelaOcorrencias');
-    if (ocorrenciasFiltrads.length > 0) {
-        tabelaOcorrencias.innerHTML = ocorrenciasFiltrads
-            .map(o => {
-                const aluno = alunos.find(a => a.id_aluno === o.aluno_id);
-                return `
-                    <tr>
-                        <td>${formatarData(o.datahora)}</td>
-                        <td>${aluno ? aluno.nome : 'N/A'}</td>
-                        <td>${getNomeTipo(o.tipo_ocorrencia)}</td>
-                        <td>
-                            <span class="gravidade-badge ${getClasseGravidade(o.gravidade_id)}">
-                                ${getNomeGravidade(o.gravidade_id)}
-                            </span>
-                        </td>
-                        <td>${o.descricao}</td>
-                    </tr>
-                `;
-            })
-            .join('');
-    } else {
-        tabelaOcorrencias.innerHTML = '<tr><td colspan="5" class="empty-message">Nenhuma ocorrência encontrada</td></tr>';
-    }
-}
-
-// Limpar filtros
-function limparFiltros() {
-    document.getElementById('filtroTipo').value = '';
-    document.getElementById('filtroGravidade').value = '';
-    document.getElementById('filtroPeriodo').value = '';
-    listarOcorrenciasComFiltros();
-}
-
 // Event Listeners
 document.addEventListener('DOMContentLoaded', async function () {
-    // Carregar todos os dados da API
     await carregarTodosDados();
 
-    // Formulário de ocorrência
-    const formOcorrencia = document.getElementById('formOcorrencia');
-    if (formOcorrencia) {
-        formOcorrencia.addEventListener('submit', registrarOcorrencia);
-    }
+    console.log(carregarTurmas())
 
-    // Formulário de destaque
-    const formDestaque = document.getElementById('formDestaque');
-    if (formDestaque) {
-        formDestaque.addEventListener('submit', registrarDestaque);
-    }
+    const formTurma = document.getElementById('formTurma');
+    if (formTurma) formTurma.addEventListener('submit', criarTurma);
 
-    // Formulário de busca
-    const formBusca = document.getElementById('formBusca');
-    if (formBusca) {
-        formBusca.addEventListener('submit', buscarAluno);
-    }
+    const formAdicionarAluno = document.getElementById('formAdicionarAluno');
+    if (formAdicionarAluno) formAdicionarAluno.addEventListener('submit', adicionarAluno);
 
-    // Filtros de ocorrências
-    const filtroTipo = document.getElementById('filtroTipo');
-    const filtroGravidade = document.getElementById('filtroGravidade');
-    const filtroPeriodo = document.getElementById('filtroPeriodo');
-
-    if (filtroTipo) {
-        filtroTipo.addEventListener('change', listarOcorrenciasComFiltros);
-    }
-    if (filtroGravidade) {
-        filtroGravidade.addEventListener('change', listarOcorrenciasComFiltros);
-    }
-    if (filtroPeriodo) {
-        filtroPeriodo.addEventListener('change', listarOcorrenciasComFiltros);
-    }
-
-    // Botão sair
-    const btnSair = document.getElementById('btnSair');
-    if (btnSair) {
-        btnSair.addEventListener('click', function () {
-            if (confirm('Deseja sair do sistema?')) {
-                alert('Você foi desconectado');
-            }
-        });
-    }
-
-    // Mostrar dashboard por padrão
     mostrarPagina('dashboard');
 });

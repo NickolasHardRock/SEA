@@ -7,8 +7,8 @@ import UsuariosRoutes from './src/routes/UsuarioRoutes.js';
 import AlunosRoutes from './src/routes/AlunoRoutes.js';
 import DestaquePositivoRoutes from './src/routes/DestaquePositivo.js';
 import OcorrenciaRoutes from './src/routes/OcorrenciaRoutes.js';
+import TurmaRoutes from './src/routes/TurmaRoutes.js';
 import './src/models/associations.js';
-
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -27,6 +27,7 @@ app.use('/api/usuario', UsuariosRoutes);
 app.use('/api/aluno', AlunosRoutes);
 app.use('/api/destaquePositivo', DestaquePositivoRoutes);
 app.use('/api/ocorrencia', OcorrenciaRoutes);
+app.use('/api/turma',TurmaRoutes);
 
 
 const PORT = process.env.PORT || 3000;

@@ -1,6 +1,4 @@
-import db from '../config/sequelize.js';
-
-const { Usuario } = db;
+import Usuario from '../models/AlunoModel.js';
 
 export const listarUsuarios = async (req, res) => {
   try {
@@ -30,12 +28,14 @@ export const procurarUsuario = async (req, res) => {
 
 export const inserirUsuario = async (req, res) => {
   try {
-    const { nome, email, perfil, senha } = req.body;
+    const { nome, email, perfil, senha, matricula, turma_id } = req.body;
     const novoUsuario = await Usuario.create({
       nome,
       email,
       perfil,
       senha,
+      matricula,
+      turma_id
     });
     return res.status(201).json(novoUsuario);
   } catch (error) {
